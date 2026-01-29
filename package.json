@@ -14,7 +14,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:dev": "node --watch src/main.js"
+    "start:dev": "node main.js"
   },
   "keywords": [],
   "author": "",
