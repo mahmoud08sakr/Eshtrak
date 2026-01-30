@@ -17,5 +17,14 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "module"
+  "type": "module",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mohamed2192003/Eshtrak.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mohamed2192003/Eshtrak/issues"
+  },
+  "homepage": "https://github.com/mohamed2192003/Eshtrak#readme"
 }

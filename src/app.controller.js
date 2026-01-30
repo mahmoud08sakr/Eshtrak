@@ -1,15 +1,17 @@
 import express from "express";
-import userRouter from "./modules/user/user.controller.js";
-import userSelectionRouter from "./modules/userSelection/userSelection.controller.js";
+import cors from "cors";
 import connectDB from "./database/connection.js";
+import userRoutes from "./modules/user/user.routes.js";
+import adminRoutes from "./modules/admin/admin.routes.js";
+import { ENV } from "../config/env.service.js";
 export const bootstrap = () => {
   const app = express();
+  app.use(cors({ origin: "http://localhost:3000" }));
   app.use(express.json());
   connectDB();
-  app.use("/api/users", userRouter);
-  app.use("/api/user-selections", userSelectionRouter);
-  app.get("/test", (req, res) => res.json({ message: "Server is running!" }));
-  app.listen(process.env.PORT || 5000, () =>
-    console.log("🚀 Server running")
+  app.use("/api/users", userRoutes);
+  app.use("/api/admin", adminRoutes);
+  app.listen(ENV.PORT, () =>
+    console.log(`🚀 Server running on port ${ENV.PORT}`)
   );
 };

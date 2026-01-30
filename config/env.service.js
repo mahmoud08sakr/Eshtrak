@@ -24,7 +24,9 @@ if (error) {
   console.error(error.message);
   process.exit(1);
 }
-process.env.PORT = value.PORT;
-process.env.MONGO_URI = value.MONGO_URI;
-process.env.JWT_SECRET = value.JWT_SECRET;
+export const ENV = {
+  PORT: value.PORT,
+  MONGO_URI: value.MONGO_URI,
+  JWT_SECRET: value.JWT_SECRET
+};
 console.log("✅ Environment variables validated successfully");

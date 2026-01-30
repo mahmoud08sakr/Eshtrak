@@ -1,5 +1,2 @@
-import "../config/env.service.js"
 import { bootstrap } from "./app.controller.js";
 bootstrap();
-// user: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTdhYmEwYmU4Zjg1Y2RhZmM0YzlkZjgiLCJyb2xlIjoidXNlciIsImlhdCI6MTc2OTY1MDcxMywiZXhwIjoxNzcwMjU1NTEzfQ.h827kRLhGUZSbW-IOVfk4UaEkof6_-yPllLnqnkPppw
-// admin : eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2OTdhYmEwYmU4Zjg1Y2RhZmM0YzlkZjgiLCJyb2xlIjoiYWRtaW4iLCJpYXQiOjE3Njk2NTE3MjUsImV4cCI6MTc3MDI1NjUyNX0.t4cDps6LRlEwRjM9KXNDEJgUtnVZ_HlvT9wkyc4IxNM

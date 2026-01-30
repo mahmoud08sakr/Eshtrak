@@ -1,17 +1,33 @@
 import jwt from "jsonwebtoken";
-export const auth = (req, res, next) => {
+import { ENV } from "../../config/env.service.js";
+
+export const authMiddleware = (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
-    if (!token) throw new Error();
-    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    const authHeader = req.headers.authorization;
+
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+    const token = authHeader.split(" ")[1];
+    const decoded = jwt.verify(token, ENV.JWT_SECRET);
+    req.user = {
+      id: decoded.id,
+      role: decoded.role,
+    };
     next();
-  } catch {
-    res.status(401).json({ message: "Unauthorized" });
+  } catch (error) {
+    return res.status(401).json({ message: "Invalid or expired token" });
   }
 };
-export const adminOnly = (req, res, next) => {
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Forbidden" });
-  }
-  next();
+
+/* =========================
+   ROLE GUARD (ADMIN)
+========================= */
+export const allowRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ message: "Access denied" });
+    }
+    next();
+  };
 };

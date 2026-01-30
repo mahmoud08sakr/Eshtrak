@@ -1,42 +1,90 @@
 import User from "../../database/models/user.model.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
-export const userSignUp = async (userData) => {
-  const { email, password } = userData;
-  const isExist = await User.findOne({ email });
-  if (isExist) throw new Error("Email already exists");
+import crypto from "crypto";
+import { signToken } from "../../utils/jwt.js";
+
+export const signup = async ({ firstName, lastName, email, password }) => {
+  const exists = await User.findOne({ email });
+  if (exists) throw new Error("Email already exists");
   const hashedPassword = await bcrypt.hash(password, 10);
-  const user = await User.create({
-    ...userData,
+  await User.create({
+    firstName,
+    lastName,
+    email,
     password: hashedPassword,
+    role: "user",
   });
   return {
-    _id: user._id,
-    email: user.email,
-    fullName: user.fullName,
-    role: user.role,
+    message: "Registered successfully.",
   };
 };
-export const loginUser = async (email, password) => {
+export const login = async (email, password) => {
   const user = await User.findOne({ email });
   if (!user) throw new Error("Invalid email or password");
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) throw new Error("Invalid email or password");
-  const token = jwt.sign(
-    { _id: user._id, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: "7d" }
+  const token = signToken({
+    id: user._id,
+    role: user.role,
+  });
+return {
+  token,
+  user: {
+    id: user._id,
+    name: `${user.firstName} ${user.lastName}`,
+    email: user.email,
+    role: user.role,
+  },
+}
+};
+export const me = async (userId) => {
+  const user = await User.findById(userId).select("-password");
+  if (!user) throw new Error("User not found");
+  return user;
+};
+export const changePassword = async (userId, oldPassword, newPassword) => {
+  const user = await User.findById(userId);
+  if (!user) throw new Error("User not found");
+  const isMatch = await bcrypt.compare(oldPassword, user.password);
+  if (!isMatch) throw new Error("Old password incorrect");
+  user.password = await bcrypt.hash(newPassword, 10);
+  await user.save();
+  return { message: "Password updated successfully" };
+};
+export const forgotPassword = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    return { message: "If email exists, reset link sent" };
+  }
+  const resetToken = crypto.randomBytes(32).toString("hex");
+  user.resetPasswordToken = resetToken;
+  user.resetPasswordExpires = Date.now() + 15 * 60 * 1000;
+  await user.save();
+  console.log(
+    "🔑 RESET PASSWORD LINK:",
+    `http://localhost:3000/reset-password/${resetToken}`
   );
-  return {
-    token,
-    user: {
-      _id: user._id,
-      email: user.email,
-      fullName: user.fullName,
-      role: user.role,
-    },
-  };
+  return { message: "Reset link sent" };
 };
-export const getUserProfile = async (userId) => {
-  return await User.findById(userId).select("-password");
+export const resetPassword = async (token, newPassword) => {
+  const user = await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
+  if (!user) throw new Error("Invalid or expired token");
+  user.password = await bcrypt.hash(newPassword, 10);
+  user.resetPasswordToken = null;
+  user.resetPasswordExpires = null;
+  await user.save();
+  return { message: "Password reset successfully" };
 };
+export const updateProfile = async (userId, firstName, lastName) => {
+    console.log("BODY:", firstName, lastName);
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { firstName, lastName },
+    { new: true }
+  ).select('-password')
+  if (!user) throw new Error("User not found");
+  return user;
+}
