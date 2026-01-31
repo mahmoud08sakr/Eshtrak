@@ -5,7 +5,6 @@ import userRoutes from "./modules/user/user.routes.js";
 import adminRoutes from "./modules/admin/admin.routes.js";
 import { ENV } from "../config/env.service.js";
 export const bootstrap = () => {
-  const app = express();
   app.use(
   cors({
     origin: true, // reflect request origin (e.g. http://localhost:3000)
@@ -13,6 +12,7 @@ export const bootstrap = () => {
     optionsSuccessStatus: 200,
   })
 );
+  const app = express();
   app.use(express.json());
   connectDB();
   app.use("/api/users", userRoutes);
