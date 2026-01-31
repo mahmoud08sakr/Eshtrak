@@ -7,7 +7,7 @@ import { ENV } from "../config/env.service.js";
 export const bootstrap = () => {
   app.use(
   cors({
-    origin: true, // reflect request origin (e.g. http://localhost:3000)
+    origin: "*", // reflect request origin (e.g. http://localhost:3000)
     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     optionsSuccessStatus: 200,
   })
