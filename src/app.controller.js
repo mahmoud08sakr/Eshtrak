@@ -23,6 +23,10 @@ export const bootstrap = async() => {
   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Accept");
   next();
 });
+app.get("/", (req, res) => {
+  res.json({ message: "API ALIVE" });
+});
+
   app.use("/api/users", userRoutes);
   app.use("/api/admin", adminRoutes);
   app.listen(ENV.PORT, () =>
