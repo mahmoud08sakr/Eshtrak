@@ -30,16 +30,13 @@
 // };
 
 import express from "express";
-
 export const bootstrap = () => {
   const app = express();
-
+  app.use(express.json());
   app.get("/", (req, res) => {
-    res.send("HELLO FROM RAILWAY");
+    res.json("HELLO FROM RAILWAY");
   });
-
 const PORT = process.env.PORT;
-
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on port ${PORT}`);
 });
