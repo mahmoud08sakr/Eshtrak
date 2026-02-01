@@ -1,6 +1,8 @@
 import dotenv from "dotenv";
 import Joi from "joi";
-dotenv.config({ path: "./config/.env" });
+if (process.env.NODE_ENV !== "production") {
+  dotenv.config({ path: "./config/.env" });
+}
 const envSchema = Joi.object({
   PORT: Joi.number().default(5000),
   MONGO_URI: Joi.string()
