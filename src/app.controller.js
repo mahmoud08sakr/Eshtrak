@@ -30,15 +30,16 @@
 // };
 
 import express from "express";
+import { ENV } from '../config/env.service.js'
 export const bootstrap = () => {
   const app = express();
   app.use(express.json());
   app.get("/", (req, res) => {
     res.json("HELLO FROM RAILWAY");
   });
-const PORT = process.env.PORT;
-app.listen(PORT, "0.0.0.0", () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+  app.listen(ENV.PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${ENV.PORT}`);
+  });
 
 };
