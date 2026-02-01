@@ -24,7 +24,7 @@ export const bootstrap = async () => {
   });
   app.use("/api/users", userRoutes);
   app.use("/api/admin", adminRoutes);
-  app.listen(process.env.PORT, () =>
+  app.listen(process.env.PORT, "0.0.0.0", () =>
     console.log(`🚀 Server running on port ${process.env.PORT}`)
   );
 };
